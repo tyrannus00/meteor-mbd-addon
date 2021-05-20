@@ -11,8 +11,8 @@ import minegame159.meteorclient.settings.BoolSetting;
 import minegame159.meteorclient.settings.IntSetting;
 import minegame159.meteorclient.settings.Setting;
 import minegame159.meteorclient.settings.SettingGroup;
-import minegame159.meteorclient.utils.player.ChatUtils;
 import minegame159.meteorclient.utils.player.InvUtils;
+import minegame159.meteorclient.utils.player.Rotations;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.gui.screen.ingame.HorseScreen;
 import net.minecraft.entity.Entity;
@@ -35,7 +35,7 @@ public class AutoMountBypassDupe extends Module {
 
     private final Setting<Boolean> shulkersOnly = sgGeneral.add(new BoolSetting.Builder()
             .name("shulker-only")
-            .description("Only moves shulker boxes into the inventory")
+            .description("Only moves shulker boxes into the inventory.")
             .defaultValue(true)
             .build());
 
@@ -119,7 +119,7 @@ public class AutoMountBypassDupe extends Module {
                 if (slot != -1 && slot < 9) {
                     mc.player.inventory.selectedSlot  = slot;
                 } else {
-                    ChatUtils.moduleError(this, "Cannot find chest in your hotbar... disabling.");
+                    error("Cannot find chest in your hotbar... disabling.");
                     this.toggle();
                 }
             }
@@ -127,12 +127,10 @@ public class AutoMountBypassDupe extends Module {
             if (isDupeTime()) {
                 if (!slotsToThrow.isEmpty()) {
                     if (faceDown.get()) {
-                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(mc.player.yaw, 90, mc.player.isOnGround()));
+                        Rotations.rotate(mc.player.yaw, 90, 99, this::drop);
+                    } else {
+                        drop();
                     }
-                    for (int i : slotsToThrow) {
-                        InvUtils.clickSlot(i, 1, SlotActionType.THROW);
-                    }
-                    slotsToThrow.clear();
                 } else {
                     for (int i = 2; i < getDupeSize() + 1; i++) {
                         slotsToThrow.add(i);
@@ -175,7 +173,9 @@ public class AutoMountBypassDupe extends Module {
             }
 
             if (!slotsToMove.isEmpty()) {
-                for (int i : slotsToMove) InvUtils.clickSlot(i, 0, SlotActionType.QUICK_MOVE);
+                for (int i : slotsToMove) {
+                    InvUtils.quickMove().from(i).to(0);
+                }
                 slotsToMove.clear();
             }
         }
@@ -207,6 +207,13 @@ public class AutoMountBypassDupe extends Module {
         }
 
         return false;
+    }
+
+    private void drop() {
+        for (int i : slotsToThrow) {
+            InvUtils.drop().slot(i);
+        }
+        slotsToThrow.clear();
     }
 
     private int getDupeSize() {
