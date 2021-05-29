@@ -2,9 +2,8 @@
   "schemaVersion": 1,
   "id": "meteor-mbd-addon",
   "version": "${version}",
-
-  "name": "Meteor Mount Bypass Dupe Addon",
-  "description": "An addon to Meteor Client that adds the AutoMountBypassDupe module.",
+  "name": "Meteor MBD Addon",
+  "description": "An addon for the auto mount bypass dupe.",
   "authors": [
     "seasnail8169"
   ],
@@ -15,16 +14,15 @@
     "discord": "https://meteorclient.com/discord"
   },
   "license": "GPL-3.0",
-  "icon": "assets/mountbypassdupe/icon.png",
+  "icon": "assets/mbd/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "meteordevelopment.addons.mountbypassdupe.MountBypassDupeAddon"
+      "meteordevelopment.addons.mbd.MBDAddon"
     ]
   },
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": "*",
     "minecraft": "1.16.x",
     "meteor-client": "*"
   }

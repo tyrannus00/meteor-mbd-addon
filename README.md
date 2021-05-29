@@ -1,8 +1,8 @@
-# Meteor AutoMountBypassDupe Addon
+# Mount Bypass Dupe Addon
 
-An addon to Meteor Client that adds the mount bypass dupe module back to the GUI.
+An addon for the auto mount bypass dupe.
 
 ### How to use:
 - Download the latest release of this mod from the [releases tab](https://github.com/MeteorDevelopment/meteor-mbd-addon/releases/latest).
-- Put it in your `.minecraft/mods` folder where you have installed Meteor.
-- It will then add itself to the Meteor GUI and you can use it as normal.
+- Put it in `.minecraft/mods` folder where you have installed Meteor.
+- Launch your game.

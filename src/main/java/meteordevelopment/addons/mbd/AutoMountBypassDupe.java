@@ -1,16 +1,16 @@
-package meteordevelopment.addons.mountbypassdupe;
+package meteordevelopment.addons.mbd;
 
 import meteordevelopment.orbit.EventHandler;
 import minegame159.meteorclient.events.packets.PacketEvent;
 import minegame159.meteorclient.events.world.TickEvent;
-import minegame159.meteorclient.systems.modules.Categories;
-import minegame159.meteorclient.systems.modules.Module;
-import minegame159.meteorclient.systems.modules.Modules;
-import minegame159.meteorclient.systems.modules.world.MountBypass;
 import minegame159.meteorclient.settings.BoolSetting;
 import minegame159.meteorclient.settings.IntSetting;
 import minegame159.meteorclient.settings.Setting;
 import minegame159.meteorclient.settings.SettingGroup;
+import minegame159.meteorclient.systems.modules.Categories;
+import minegame159.meteorclient.systems.modules.Module;
+import minegame159.meteorclient.systems.modules.Modules;
+import minegame159.meteorclient.systems.modules.world.MountBypass;
 import minegame159.meteorclient.utils.player.InvUtils;
 import minegame159.meteorclient.utils.player.Rotations;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -22,8 +22,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
 import org.lwjgl.glfw.GLFW;
 
@@ -112,12 +110,12 @@ public class AutoMountBypassDupe extends Module {
         }
 
         if (slots == -1) {
-            if (entity.hasChest() || mc.player.getMainHandStack().getItem() == Items.CHEST){
+            if (entity.hasChest() || mc.player.getMainHandStack().getItem() == Items.CHEST) {
                 mc.player.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, Hand.MAIN_HAND, mc.player.isSneaking()));
             } else {
                 int slot = InvUtils.findItemWithCount(Items.CHEST).slot;
                 if (slot != -1 && slot < 9) {
-                    mc.player.inventory.selectedSlot  = slot;
+                    mc.player.inventory.selectedSlot = slot;
                 } else {
                     error("Cannot find chest in your hotbar... disabling.");
                     this.toggle();
@@ -145,7 +143,7 @@ public class AutoMountBypassDupe extends Module {
             }
         } else if (!(mc.currentScreen instanceof HorseScreen)) {
             mc.player.openRidingInventory();
-        } else if (slots > 0 ) {
+        } else if (slots > 0) {
             if (slotsToMove.isEmpty()) {
                 boolean empty = true;
                 for (int i = 2; i <= slots; i++) {
@@ -158,7 +156,8 @@ public class AutoMountBypassDupe extends Module {
                     for (int i = slots + 2; i < mc.player.currentScreenHandler.getStacks().size(); i++) {
                         if (!(mc.player.currentScreenHandler.getStacks().get(i).isEmpty())) {
                             if (mc.player.currentScreenHandler.getSlot(i).getStack().getItem() == Items.CHEST) continue;
-                            if (!(mc.player.currentScreenHandler.getSlot(i).getStack().getItem() instanceof BlockItem && ((BlockItem) mc.player.currentScreenHandler.getSlot(i).getStack().getItem()).getBlock() instanceof ShulkerBoxBlock) && shulkersOnly.get()) continue;
+                            if (!(mc.player.currentScreenHandler.getSlot(i).getStack().getItem() instanceof BlockItem && ((BlockItem) mc.player.currentScreenHandler.getSlot(i).getStack().getItem()).getBlock() instanceof ShulkerBoxBlock) && shulkersOnly.get())
+                                continue;
                             slotsToMove.add(i);
 
                             if (slotsToMove.size() >= slots) break;
@@ -181,10 +180,10 @@ public class AutoMountBypassDupe extends Module {
         }
     }
 
-    private int getInvSize(Entity e){
+    private int getInvSize(Entity e) {
         if (!(e instanceof AbstractDonkeyEntity)) return -1;
 
-        if (!((AbstractDonkeyEntity)e).hasChest()) return 0;
+        if (!((AbstractDonkeyEntity) e).hasChest()) return 0;
 
         if (e instanceof LlamaEntity) {
             return 3 * ((LlamaEntity) e).getStrength();
