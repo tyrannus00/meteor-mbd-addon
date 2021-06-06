@@ -113,10 +113,9 @@ public class AutoMountBypassDupe extends Module {
             if (entity.hasChest() || mc.player.getMainHandStack().getItem() == Items.CHEST) {
                 mc.player.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, Hand.MAIN_HAND, mc.player.isSneaking()));
             } else {
-                int slot = InvUtils.findItemWithCount(Items.CHEST).slot;
-                if (slot != -1 && slot < 9) {
-                    mc.player.inventory.selectedSlot = slot;
-                } else {
+                int slot = InvUtils.findInHotbar(Items.CHEST).getSlot();
+
+                if (!InvUtils.swap(slot)) {
                     error("Cannot find chest in your hotbar... disabling.");
                     this.toggle();
                 }
