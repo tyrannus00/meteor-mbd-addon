@@ -8,7 +8,7 @@
     "seasnail8169"
   ],
   "contact": {
-    "repo": "https://github.com/MeteorDevelopment/meteor-mbd-template"
+    "repo": "https://github.com/MeteorDevelopment/meteor-mbd-addon"
   },
   "icon": "assets/mbd/icon.png",
   "environment": "client",
