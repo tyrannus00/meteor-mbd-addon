@@ -1,18 +1,18 @@
 package meteordevelopment.addons.mbd;
 
 import meteordevelopment.orbit.EventHandler;
-import minegame159.meteorclient.events.packets.PacketEvent;
-import minegame159.meteorclient.events.world.TickEvent;
-import minegame159.meteorclient.settings.BoolSetting;
-import minegame159.meteorclient.settings.IntSetting;
-import minegame159.meteorclient.settings.Setting;
-import minegame159.meteorclient.settings.SettingGroup;
-import minegame159.meteorclient.systems.modules.Categories;
-import minegame159.meteorclient.systems.modules.Module;
-import minegame159.meteorclient.systems.modules.Modules;
-import minegame159.meteorclient.systems.modules.world.MountBypass;
-import minegame159.meteorclient.utils.player.InvUtils;
-import minegame159.meteorclient.utils.player.Rotations;
+import meteordevelopment.meteorclient.events.packets.PacketEvent;
+import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.IntSetting;
+import meteordevelopment.meteorclient.settings.Setting;
+import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.systems.modules.Categories;
+import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.world.MountBypass;
+import meteordevelopment.meteorclient.utils.player.InvUtils;
+import meteordevelopment.meteorclient.utils.player.Rotations;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.gui.screen.ingame.HorseScreen;
 import net.minecraft.entity.Entity;
@@ -75,7 +75,8 @@ public class AutoMountBypassDupe extends Module {
     private void onSendPacket(PacketEvent.Send event) {
         if (noCancel) return;
 
-        Modules.get().get(MountBypass.class).onSendPacket(event);
+//        TODO: FIX
+//        Modules.get().get(MountBypass.class).onSendPacket(event);
     }
 
     @EventHandler
@@ -111,7 +112,7 @@ public class AutoMountBypassDupe extends Module {
 
         if (slots == -1) {
             if (entity.hasChest() || mc.player.getMainHandStack().getItem() == Items.CHEST) {
-                mc.player.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, Hand.MAIN_HAND, mc.player.isSneaking()));
+                mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interact(entity, mc.player.isSneaking(), Hand.MAIN_HAND));
             } else {
                 int slot = InvUtils.findInHotbar(Items.CHEST).getSlot();
 
@@ -124,7 +125,7 @@ public class AutoMountBypassDupe extends Module {
             if (isDupeTime()) {
                 if (!slotsToThrow.isEmpty()) {
                     if (faceDown.get()) {
-                        Rotations.rotate(mc.player.yaw, 90, 99, this::drop);
+                        Rotations.rotate(mc.player.getYaw(), 90, 99, this::drop);
                     } else {
                         drop();
                     }
@@ -164,7 +165,7 @@ public class AutoMountBypassDupe extends Module {
                     }
                 } else {
                     noCancel = true;
-                    mc.player.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, Hand.MAIN_HAND, entity.getPos().add(entity.getWidth() / 2, entity.getHeight() / 2, entity.getWidth() / 2), mc.player.isSneaking()));
+                    mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interact(entity, mc.player.isSneaking(), Hand.MAIN_HAND));
                     noCancel = false;
                     return;
                 }

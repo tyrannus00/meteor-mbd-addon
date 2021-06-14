@@ -8,10 +8,7 @@
     "seasnail8169"
   ],
   "contact": {
-    "homepage": "https://github.com/MeteorDevelopment/meteor-mbd-addon",
-    "issues": "https://github.com/MeteorDevelopment/meteor-mbd-addon/issues",
-    "sources": "https://github.com/MeteorDevelopment/meteor-mbd-addon",
-    "discord": "https://meteorclient.com/discord"
+    "repo": "https://github.com/MeteorDevelopment/meteor-mbd-template"
   },
   "icon": "assets/mbd/icon.png",
   "environment": "client",
@@ -21,8 +18,8 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.7.4",
-    "minecraft": "1.16.x",
-    "meteor-client": "*"
+    "java": "16",
+    "minecraft": "<=1.17",
+    "meteor-client": "<=0.4.4"
   }
 }
