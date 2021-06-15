@@ -8,6 +8,8 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.world.MountBypass;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
@@ -73,8 +75,7 @@ public class AutoMountBypassDupe extends Module {
     private void onSendPacket(PacketEvent.Send event) {
         if (noCancel) return;
 
-//        TODO: FIX
-//        Modules.get().get(MountBypass.class).onSendPacket(event);
+        Modules.get().get(MountBypass.class).onSendPacket(event);
     }
 
     @EventHandler
