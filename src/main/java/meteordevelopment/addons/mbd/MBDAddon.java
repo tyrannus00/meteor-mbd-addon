@@ -8,6 +8,7 @@ public class MBDAddon extends MeteorAddon {
     @Override
     public void onInitialize() {
         MeteorClient.LOG.info("Initializing MBD Addon");
+
         Modules.get().add(new AutoMountBypassDupe());
     }
 }

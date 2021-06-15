@@ -1,6 +1,5 @@
 package meteordevelopment.addons.mbd;
 
-import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -9,10 +8,9 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.world.MountBypass;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
+import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.gui.screen.ingame.HorseScreen;
 import net.minecraft.entity.Entity;
@@ -32,24 +30,24 @@ public class AutoMountBypassDupe extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Boolean> shulkersOnly = sgGeneral.add(new BoolSetting.Builder()
-            .name("shulker-only")
-            .description("Only moves shulker boxes into the inventory.")
-            .defaultValue(true)
-            .build());
+        .name("shulker-only")
+        .description("Only moves shulker boxes into the inventory.")
+        .defaultValue(true)
+        .build());
 
     private final Setting<Boolean> faceDown = sgGeneral.add(new BoolSetting.Builder()
-            .name("rotate-down")
-            .description("Faces down when dropping items.")
-            .defaultValue(true)
-            .build()
+        .name("rotate-down")
+        .description("Faces down when dropping items.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
-            .name("delay")
-            .description("The delay in ticks between actions.")
-            .defaultValue(4)
-            .min(0)
-            .build()
+        .name("delay")
+        .description("The delay in ticks between actions.")
+        .defaultValue(4)
+        .min(0)
+        .build()
     );
 
     private final List<Integer> slotsToMove = new ArrayList<>();
