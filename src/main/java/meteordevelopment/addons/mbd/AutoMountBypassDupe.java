@@ -11,7 +11,6 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.world.MountBypass;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
-import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.gui.screen.ingame.HorseScreen;
@@ -22,6 +21,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 import org.lwjgl.glfw.GLFW;
 
@@ -31,39 +31,20 @@ import java.util.List;
 public class AutoMountBypassDupe extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<Boolean> shulkersOnly = sgGeneral.add(new BoolSetting.Builder()
-        .name("shulker-only")
-        .description("Only moves shulker boxes into the inventory.")
-        .defaultValue(true)
-        .build());
-
-    private final Setting<Boolean> faceDown = sgGeneral.add(new BoolSetting.Builder()
-        .name("rotate-down")
-        .description("Faces down when dropping items.")
-        .defaultValue(true)
-        .build()
-    );
-
-    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
-        .name("delay")
-        .description("The delay in ticks between actions.")
-        .defaultValue(4)
-        .min(0)
-        .build()
-    );
+    private final Setting<Boolean> shulkersOnly = sgGeneral.add(new BoolSetting.Builder().name("shulker-only").description("Only moves shulker boxes into the donkey's inventory.").defaultValue(true).build());
+    private final Setting<Boolean> faceDown = sgGeneral.add(new BoolSetting.Builder().name("rotate-down").description("Faces down when dropping items.").defaultValue(true).build());
+    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder().name("delay").description("The delay in ticks between actions.").defaultValue(4).min(0).build());
 
     private final List<Integer> slotsToMove = new ArrayList<>();
     private final List<Integer> slotsToThrow = new ArrayList<>();
 
     private boolean noCancel = false;
-    private boolean sneak = false;
-
     private AbstractDonkeyEntity entity;
-
+    private boolean sneak = false;
     private int timer;
 
     public AutoMountBypassDupe() {
-        super(Categories.Misc, "auto-mount-bypass-dupe", "Automatically does the mount bypass dupe.");
+        super(Categories.World, "auto-mount-bypass-dupe", "Does the mount bypass dupe for you. Disable with esc.");
     }
 
     @Override
@@ -110,12 +91,13 @@ public class AutoMountBypassDupe extends Module {
         }
 
         if (slots == -1) {
-            if (entity.hasChest() || mc.player.getMainHandStack().getItem() == Items.CHEST) {
+            if (entity.hasChest() || mc.player.getMainHandStack().getItem() == Items.CHEST){
                 mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interact(entity, mc.player.isSneaking(), Hand.MAIN_HAND));
             } else {
-                int slot = InvUtils.findInHotbar(Items.CHEST).getSlot();
-
-                if (!InvUtils.swap(slot)) {
+                int slot = InvUtils.find(Items.CHEST).getSlot();
+                if (slot != -1 && slot < 9) {
+                    mc.player.getInventory().selectedSlot  = slot;
+                } else {
                     error("Cannot find chest in your hotbar... disabling.");
                     this.toggle();
                 }
@@ -124,10 +106,12 @@ public class AutoMountBypassDupe extends Module {
             if (isDupeTime()) {
                 if (!slotsToThrow.isEmpty()) {
                     if (faceDown.get()) {
-                        Rotations.rotate(mc.player.getYaw(), 90, 99, this::drop);
-                    } else {
-                        drop();
+                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90F, mc.player.isOnGround()));
                     }
+                    for (int i : slotsToThrow) {
+                        InvUtils.drop().slotId(i);
+                    }
+                    slotsToThrow.clear();
                 } else {
                     for (int i = 2; i < getDupeSize() + 1; i++) {
                         slotsToThrow.add(i);
@@ -142,7 +126,7 @@ public class AutoMountBypassDupe extends Module {
             }
         } else if (!(mc.currentScreen instanceof HorseScreen)) {
             mc.player.openRidingInventory();
-        } else if (slots > 0) {
+        } else if (slots > 0 ) {
             if (slotsToMove.isEmpty()) {
                 boolean empty = true;
                 for (int i = 2; i <= slots; i++) {
@@ -155,8 +139,7 @@ public class AutoMountBypassDupe extends Module {
                     for (int i = slots + 2; i < mc.player.currentScreenHandler.getStacks().size(); i++) {
                         if (!(mc.player.currentScreenHandler.getStacks().get(i).isEmpty())) {
                             if (mc.player.currentScreenHandler.getSlot(i).getStack().getItem() == Items.CHEST) continue;
-                            if (!(mc.player.currentScreenHandler.getSlot(i).getStack().getItem() instanceof BlockItem && ((BlockItem) mc.player.currentScreenHandler.getSlot(i).getStack().getItem()).getBlock() instanceof ShulkerBoxBlock) && shulkersOnly.get())
-                                continue;
+                            if (!(mc.player.currentScreenHandler.getSlot(i).getStack().getItem() instanceof BlockItem && ((BlockItem) mc.player.currentScreenHandler.getSlot(i).getStack().getItem()).getBlock() instanceof ShulkerBoxBlock) && shulkersOnly.get()) continue;
                             slotsToMove.add(i);
 
                             if (slotsToMove.size() >= slots) break;
@@ -164,25 +147,23 @@ public class AutoMountBypassDupe extends Module {
                     }
                 } else {
                     noCancel = true;
-                    mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interact(entity, mc.player.isSneaking(), Hand.MAIN_HAND));
+                    mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interactAt(entity, mc.player.isSneaking(), Hand.MAIN_HAND, entity.getPos().add(entity.getWidth() / 2, entity.getHeight() / 2, entity.getWidth() / 2)));
                     noCancel = false;
                     return;
                 }
             }
 
             if (!slotsToMove.isEmpty()) {
-                for (int i : slotsToMove) {
-                    InvUtils.quickMove().from(i).to(0);
-                }
+                for (int i : slotsToMove) InvUtils.quickMove().slotId(i);
                 slotsToMove.clear();
             }
         }
     }
 
-    private int getInvSize(Entity e) {
+    private int getInvSize(Entity e){
         if (!(e instanceof AbstractDonkeyEntity)) return -1;
 
-        if (!((AbstractDonkeyEntity) e).hasChest()) return 0;
+        if (!((AbstractDonkeyEntity)e).hasChest()) return 0;
 
         if (e instanceof LlamaEntity) {
             return 3 * ((LlamaEntity) e).getStrength();
@@ -205,13 +186,6 @@ public class AutoMountBypassDupe extends Module {
         }
 
         return false;
-    }
-
-    private void drop() {
-        for (int i : slotsToThrow) {
-            InvUtils.drop().slot(i);
-        }
-        slotsToThrow.clear();
     }
 
     private int getDupeSize() {
