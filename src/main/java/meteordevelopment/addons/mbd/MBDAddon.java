@@ -1,7 +1,7 @@
 package meteordevelopment.addons.mbd;
 
-import meteordevelopment.meteorclient.MeteorAddon;
 import meteordevelopment.meteorclient.MeteorClient;
+import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 
 import java.lang.invoke.MethodHandles;
