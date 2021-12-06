@@ -5,7 +5,8 @@
   "name": "Meteor MBD Addon",
   "description": "An addon for the auto mount bypass dupe.",
   "authors": [
-    "seasnail8169"
+    "seasnail8169",
+    "tyrannus00"
   ],
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-mbd-addon"
@@ -18,8 +19,6 @@
     ]
   },
   "depends": {
-    "java": ">=16",
-    "minecraft": ">=1.17.1",
     "meteor-client": ">=0.4.6"
   }
 }
