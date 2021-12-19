@@ -2,10 +2,7 @@ package meteordevelopment.addons.mbd;
 
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.BoolSetting;
-import meteordevelopment.meteorclient.settings.IntSetting;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -33,7 +30,7 @@ public class AutoMountBypassDupe extends Module {
 
     private final Setting<Boolean> shulkersOnly = sgGeneral.add(new BoolSetting.Builder().name("shulker-only").description("Only moves shulker boxes into the donkey's inventory.").defaultValue(true).build());
     private final Setting<Boolean> faceDown = sgGeneral.add(new BoolSetting.Builder().name("rotate-down").description("Faces down when dropping items.").defaultValue(true).build());
-    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder().name("delay").description("The delay in ticks between actions.").defaultValue(4).min(0).build());
+    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder().name("delay").description("The delay in ticks between actions.").defaultValue(4).min(0).sliderRange(0,30).build());
 
     private final List<Integer> slotsToMove = new ArrayList<>();
     private final List<Integer> slotsToThrow = new ArrayList<>();
